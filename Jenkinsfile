@@ -1,33 +1,41 @@
 pipeline {
     agent any
 
-    // Define custom environment variables
+    tools {
+        // Use the exact name of your Maven configuration
+        maven 'Maven'
+    }
+
     environment {
-        APP_VERSION = '1.0.3' // Example application version
-        DEPLOY_ENV = 'staging' // Deployment environment
-        AUTHOR_NAME = 'Faisal Ali' // Example author name
+        // Define any environment variables you may need
+        APP_VERSION = '1.0.3'
     }
 
     stages {
+        stage('Setup') {
+            steps {
+                echo "Setting up environment for Maven..."
+            }
+        }
+
         stage('Build') {
             steps {
-                echo "Building version: ${env.APP_VERSION}"
-                echo "Author: ${env.AUTHOR_NAME}"
-                // Your build logic here
+                // For Windows, use 'bat' instead of 'sh'
+                bat 'mvn --version' // Verify Maven installation
+                bat 'mvn clean install' // Install dependencies and build
             }
         }
 
         stage('Test') {
             steps {
-                echo "Running tests for version: ${env.APP_VERSION}"
-                // Your test logic here
+                bat 'mvn test' // Run tests using Maven
             }
         }
 
         stage('Deploy') {
             steps {
-                echo "Deploying version: ${env.APP_VERSION} to environment: ${env.DEPLOY_ENV}"
-                // Your deployment logic here
+                echo "Deploying application version ${env.APP_VERSION}..."
+                // Add your deployment logic here
             }
         }
     }
