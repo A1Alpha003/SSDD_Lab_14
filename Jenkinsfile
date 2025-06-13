@@ -1,23 +1,36 @@
 pipeline { 
     agent any 
+ 
     stages { 
         stage('Build') { 
             steps { 
-                echo 'Building..' 
-                // Here you can define commands for your build 
+                echo 'Building...' 
+                sh 'echo "Build process completed!"' 
             } 
         } 
+ 
         stage('Test') { 
-            steps { 
-                echo 'Testing..' 
-                // Here you can define commands for your tests 
+            when { 
+                allOf {
+                       expression { env.BRANCH_NAME == 'main' } // Run only 
+on 'main' branch 
+                    not { 
+                        expression { env.SKIP_TESTS == 'true' } // Skip if 
+SKIP_TESTS is set to true 
+                    } 
+                } 
             } 
-        }
-            stage('Deploy') { 
             steps { 
-                echo 'Deploying....' 
-                // Here you can define commands for your deployment 
+                echo 'Testing...' 
+                sh 'echo "Running test cases!"' 
             } 
+        } 
+ 
+        stage('Deploy') { 
+            steps { 
+                echo 'Deploying...' 
+                sh 'echo "Deployment process completed!"' 
+  } 
         } 
     } 
-}
+} 
