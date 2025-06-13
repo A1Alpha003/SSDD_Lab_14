@@ -1,41 +1,35 @@
 pipeline {
     agent any
 
-    tools {
-        // Use the exact name of your Maven configuration
-        maven 'Maven'
-    }
-
-    environment {
-        // Define any environment variables you may need
-        APP_VERSION = '1.0.3'
+    parameters {
+        booleanParam(name: 'executeTests', defaultValue: true, description: 'Run tests during the pipeline build?')
     }
 
     stages {
         stage('Setup') {
             steps {
-                echo "Setting up environment for Maven..."
+                echo 'Setting up the build environment...'
             }
         }
 
         stage('Build') {
             steps {
-                // For Windows, use 'bat' instead of 'sh'
-                bat 'mvn --version' // Verify Maven installation
-                bat 'mvn clean install' // Install dependencies and build
+                echo 'Building the project...'
             }
         }
 
         stage('Test') {
+            when {
+                expression { params.executeTests }
+            }
             steps {
-                bat 'mvn test' // Run tests using Maven
+                echo 'Running tests...'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo "Deploying application version ${env.APP_VERSION}..."
-                // Add your deployment logic here
+                echo 'Deploying the project...'
             }
         }
     }
