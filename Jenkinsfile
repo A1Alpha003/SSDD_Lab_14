@@ -4,35 +4,35 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building the application...'
-                // Add commands for building the application, e.g., `mvn clean install` for a Maven project
+                echo 'Building...'
+                // Add your build steps here
             }
         }
-
         stage('Test') {
             steps {
-                echo 'Running tests...'
-                // Add commands for running tests, e.g., `npm test` for a Node.js project
+                echo 'Testing...'
+                // Add your test steps here
             }
         }
-
         stage('Deploy') {
             steps {
-                echo 'Deploying the application...'
-                // Add commands for deployment, e.g., copying files to a server
+                echo 'Deploying...'
+                // Add your deploy steps here
             }
         }
     }
 
     post {
-        always {
-            echo 'Pipeline completed.'
-        }
         success {
-            echo 'Pipeline succeeded!'
+            echo 'Build succeeded!'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo 'Build failed! Notifying the team...'
+            // Add failure-specific steps here, e.g., sending an email or Slack notification
+        }
+        always {
+            echo 'Cleaning up workspace...'
+            cleanWs() // Cleans up the workspace after the build
         }
     }
 }
